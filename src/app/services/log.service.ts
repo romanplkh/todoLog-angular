@@ -56,7 +56,7 @@ export class LogService {
   }
 
   updateLog(logPassed: Log) {
-    this.logs.forEach((log, index) => {
+    this.logs.forEach(log => {
       if (log.id === logPassed.id) {
         log.text = logPassed.text;
         log.date = Date.now();
