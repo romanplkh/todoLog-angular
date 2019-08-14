@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Log } from '../models/log';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -21,28 +20,37 @@ export class LogService {
 
   onResetStateSource = this.resetStateSource.asObservable();
 
-  constructor() {
-    this.logs = [
-      {
-        id: '1',
-        text: 'Generated Components',
-        date: new Date('7/23/2019 17:45:00')
-      },
-      {
-        id: '2',
-        text: 'Buy Milk',
-        date: new Date('08/11/2019 17:45:00')
-      },
-      {
-        id: '3',
-        text: 'Do dishes',
-        date: new Date('08/05/2019 19:37:00')
-      }
-    ];
-  }
+  constructor() {}
 
   getLogs(): Observable<Log[]> {
+    if (
+      localStorage.getItem('todos')!==null &&
+      localStorage.getItem('todos').length > 2
+    ) {
+      console.log(localStorage.getItem('todos').length);
+      this.logs = JSON.parse(localStorage.getItem('todos'));
+    } else {
+      this.logs = [
+        {
+          id: '1',
+          text: 'Walk a dog',
+          date: new Date('7/23/2019 17:45:00')
+        },
+        {
+          id: '2',
+          text: 'Buy Milk',
+          date: new Date('08/11/2019 17:45:00')
+        },
+        {
+          id: '3',
+          text: 'Do dishes',
+          date: new Date('08/05/2019 19:37:00')
+        }
+      ];
+    }
+
     this.sortLogsByDate();
+
     return of(this.logs);
   }
 
@@ -53,6 +61,7 @@ export class LogService {
   addLog(log: Log) {
     this.logs.unshift(log);
     this.sortLogsByDate();
+    this.refreshLocalStorage();
   }
 
   updateLog(logPassed: Log) {
@@ -63,16 +72,24 @@ export class LogService {
         this.sortLogsByDate();
       }
     });
+
+    this.refreshLocalStorage();
   }
 
   deleteLog(logToDelete: Log) {
     const indexToDelete = this.logs.indexOf(logToDelete);
     this.logs.splice(indexToDelete, 1);
+    this.refreshLocalStorage();
+  }
+
+  refreshLocalStorage() {
+    const logJSON = JSON.stringify(this.logs);
+    localStorage.setItem('todos', logJSON);
   }
 
   resetState() {
-   this.resetStateSource.next(true)
- }
+    this.resetStateSource.next(true);
+  }
 
   // !HELPERS
 
