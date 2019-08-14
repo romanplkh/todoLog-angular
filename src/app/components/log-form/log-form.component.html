@@ -1,0 +1,27 @@
+<div class="car card-body mb-3">
+  <form #todoForm="ngForm" (ngSubmit)="onSubmit(todoForm)">
+    <div class="form-group">
+      <input
+        type="text"
+        name="text"
+        [(ngModel)]="log.text"
+        class="form-control"
+        placeholder="Add todo...."
+      />
+    </div>
+    <input
+      type="submit"
+      class="btn btn-outline-success"
+      value="{{ !isNew ? 'Update ToDo' : 'Add ToDo' }}"
+      [hidden]="!log.text"
+    />
+    <button
+      (click)="clearState()"
+      [hidden]="!log.text"
+      type="button"
+      class="btn btn-outline-secondary ml-2"
+    >
+      Clear
+    </button>
+  </form>
+</div>
